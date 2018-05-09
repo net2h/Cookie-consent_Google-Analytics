@@ -1,0 +1,18 @@
+{
+  "name": "virte/CookieConsent",
+  "description": "Code pour mettre Google Analytics en conformité avec la législation française sur les cookies",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "virte nicolas",
+      "email": "n.virte@cruiseline.eu"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/net2h/Cookie-consent_Google-Analytics.git"
+    }
+  ]
+}
