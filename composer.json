@@ -1,5 +1,5 @@
 {
-  "name": "net2h/CookieConsent",
+  "name": "net2h/cookie-consent",
   "description": "Code pour mettre Google Analytics en conformité avec la législation française sur les cookies",
   "minimum-stability": "stable",
   "license": "MIT",
@@ -8,15 +8,5 @@
       "name": "virte nicolas",
       "email": "n.virte@cruiseline.eu"
     }
-  ],
-   "require": {
-        "php": ">=7.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "~4.8"
-    },
-    "autoload": {
-        "psr-0": { "Net2h\\CookieConsent": "" }
-    },
-    "target-dir": "Net2h/CookieConsent"
+  ]
 }
