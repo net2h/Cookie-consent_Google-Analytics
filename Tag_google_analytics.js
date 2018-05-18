@@ -1,12 +1,13 @@
-let tagAnalyticsCNIL = {};
+let tagAnalytics = {};
 
-tagAnalyticsCNIL.CookieConsent = function () {
-    let gaProperty = 'UA-XXXXXX-Y ';
-    // Désactive le tracking si le cookie d’Opt-out existe déjà.
-    let disableStr = 'ga-disable-' + gaProperty;
+window.rgpd_cookie_pub = true;
+window.rgpd_cookie_site = true;
+window.rgpd_cookie_tier = true;
+window.rgpd_cookie_analytic = true;
+
+tagAnalytics.CookieConsent = function () {
     let firstCall = false;
     let domaineName = '';
-
 
     function getCookieExpireDate() {
         let cookieTimeout = 33696000000;// 13 mois
@@ -31,27 +32,20 @@ tagAnalyticsCNIL.CookieConsent = function () {
         return "domain=" + "." + hostname;
     }
 
-    //Cette fonction vérifie si on  a déjà obtenu le consentement de la personne qui visite le site
     function checkFirstVisit() {
         let consentCookie = getCookie('hasConsent');
         if (!consentCookie) return true;
     }
 
-    //Affiche une  bannière d'information en haut de la page
     function showBanner() {
         let bodytag = document.getElementsByTagName('body')[0];
         let div = document.createElement('div');
         div.setAttribute('id', 'cookie-banner');
-        div.setAttribute('width', '70%');
-        div.innerHTML = '<div style="background-color:#fff;text-align:center;padding:5px;font-size:12px;border-bottom:1px solid #eeeeee;" id="cookie-banner-message" align="center">Ce site utilise Google Analytics.\
-		En continuant à naviguer, vous nous autorisez à déposer un cookie à des fins de \
-		mesure d\'audience. \
-		<a href="javascript:tagAnalyticsCNIL.CookieConsent.showInform()" style="text-decoration:underline;"> En savoir plus ou s\'opposer</a>.</div>';
-        bodytag.insertBefore(div, bodytag.firstChild); // Ajoute la banniére juste au début de la page
+        div.setAttribute('class', 'fixed b0 l0 z999 w100P center line50 h50 fn07 blanc font12 bb ombre animated1 slideInUp');
+        div.innerHTML = localisation.bannerContentHTML;
+        bodytag.insertBefore(div, bodytag.firstChild);
         document.getElementsByTagName('body')[0].className += ' cookiebanner';
-        createInformAndAskDiv();
     }
-
 
     function getCookie(NameOfCookie) {
         if (document.cookie.length > 0) {
@@ -67,6 +61,21 @@ tagAnalyticsCNIL.CookieConsent = function () {
         return null;
     }
 
+    function getCookieValue(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i <ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) === 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
 
     function getInternetExplorerVersion() {
         let rv = -1;
@@ -86,10 +95,9 @@ tagAnalyticsCNIL.CookieConsent = function () {
 
 
     function askDNTConfirmation() {
-        return confirm("La signal DoNotTrack de votre navigateur est activé, confirmez vous activer la fonction DoNotTrack?")
+        return confirm(localisation.dntConfirmation)
     }
 
-    //Vérifie la valeur de navigator.DoNotTrack pour savoir si le signal est activé et est à 1
     function notToTrack() {
         if ((navigator.doNotTrack && (navigator.doNotTrack === 'yes' || navigator.doNotTrack === '1')) || ( navigator.msDoNotTrack && navigator.msDoNotTrack === '1')) {
             let isIE = (getInternetExplorerVersion() !== -1);
@@ -101,60 +109,43 @@ tagAnalyticsCNIL.CookieConsent = function () {
         }
     }
 
-    //Si le signal est à 0 on considére que le consentement a déjà été obtenu
     function isToTrack() {
         if (navigator.doNotTrack && (navigator.doNotTrack === 'no' || navigator.doNotTrack === 0 )) {
             return true;
         }
     }
 
-    // Fonction d'effacement des cookies
     function delCookie(name) {
         let path = ";path=" + "/";
-
-
         let expiration = "Thu, 01-Jan-1970 00:00:01 GMT";
         document.cookie = name + "=" + path + " ; " + getCookieDomainName() + ";expires=" + expiration;
     }
 
-    // Efface tous les types de cookies utilisés par Google Analytics
     function deleteAnalyticsCookies() {
         let cookieNames = ["__utma", "__utmb", "__utmc", "__utmz", "_ga", "_gat"];
         for (let i = 0; i < cookieNames.length; i++)
             delCookie(cookieNames[i])
     }
 
-    //La fonction qui informe et demande le consentement. Il s'agit d'un div qui apparait au centre de la page
-    function createInformAndAskDiv() {
-        let bodytag = document.getElementsByTagName('body')[0];
-        let div = document.createElement('div');
-        div.setAttribute('id', 'inform-and-ask');
-        div.style.width = window.innerWidth + "px";
-        div.style.height = window.innerHeight + "px";
-        div.style.display = "none";
-        div.style.position = "fixed";
-        div.style.zIndex = "100000";
-        // Le code HTML de la demande de consentement
-        // Vous pouvez modifier le contenu ainsi que le style
-        div.innerHTML = '<div style="width: 300px; background-color: white; repeat scroll 0% 0% white; border: 1px solid #cccccc; padding :10px 10px;text-align:center; position: fixed; top:30px; left:50%; margin-top:0; margin-left:-150px; z-index:100000; opacity:1" id="inform-and-consent">\
-		<div><span><b>Les cookies Google Analytics</b></span></div><br><div>Ce site utilise  des cookies de Google Analytics,\
-		ces cookies nous aident à identifier le contenu qui vous interesse le plus ainsi qu\'à repérer certains \
-		dysfonctionnements. Vos données de navigations sur ce site sont envoyées à Google Inc</div><div style="padding :10px 10px;text-align:center;"><button style="margin-right:50px;text-decoration:underline;" \
-		name="S\'opposer" onclick="tagAnalyticsCNIL.CookieConsent.gaOptout();tagAnalyticsCNIL.CookieConsent.hideInform();" id="optout-button" >S\'opposer</button><button style="text-decoration:underline;" name="cancel" onclick="tagAnalyticsCNIL.CookieConsent.hideInform()" >Accepter</button></div></div>';
-        bodytag.insertBefore(div, bodytag.firstChild); // Ajoute la banniére juste au début de la page
+    function isClickOnOptOut(evt) {
+        return (evt.target.id === 'gerercookie' || evt.target.parentNode.id === 'popContent' || evt.target.parentNode.id === 'cookie-banner' || evt.target.parentNode.parentNode.id === 'cookie-banner' || evt.target.id === 'optout-button')
     }
 
-
-    function isClickOnOptOut(evt) { // Si le noeud parent ou le noeud parent du parent est la banniére, on ignore le clic
-        return (evt.target.parentNode.id === 'cookie-banner' || evt.target.parentNode.parentNode.id === 'cookie-banner' || evt.target.id === 'optout-button')
+    function setCookie(name, value){
+        console.log('name '+name+' value '+value)
+        document.cookie = name+'='+value+';'+ getCookieExpireDate() + ' ; ' + getCookieDomainName() + ' ; path=/';
     }
 
     function consent(evt) {
-        if (!isClickOnOptOut(evt)) { // On vérifie qu'il ne s'agit pas d'un clic sur la banniére
+        if (!isClickOnOptOut(evt)) {
             if (!clickprocessed) {
+                console.log(evt);
                 evt.preventDefault();
-                document.cookie = 'hasConsent=true; ' + getCookieExpireDate() + ' ; ' + getCookieDomainName() + ' ; path=/';
-                callGoogleAnalytics();
+                setCookie('hasConsent', true);
+                setCookie('rgpd_cookie_site', window.rgpd_cookie_site);
+                setCookie('rgpd_cookie_analytic', window.rgpd_cookie_analytic);
+                setCookie('rgpd_cookie_tier', window.rgpd_cookie_tier);
+                setCookie('rgpd_cookie_pub', window.rgpd_cookie_pub);
                 clickprocessed = true;
                 window.setTimeout(function () {
                     evt.target.click();
@@ -163,111 +154,116 @@ tagAnalyticsCNIL.CookieConsent = function () {
         }
     }
 
-    // Cette fonction en test permet de faire une call GA  afin de pouvoir compter le nombre de visite sans faire de suivi des utilisateurs (fonction en cours de test)
-    // Cela crée un evenement page qui est consultable depuis le panneau evenement de GA
-    // Potentiellement cette méthode pourrait être utilisé pour comptabiliser les click sur l'opt-out
-    function callGABeforeConsent() {
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r;
-            i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date();
-            a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
-            a.async = 1;
-            a.src = g;
-            m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', '//www.google-analytics.com/analytics.js', '__gaTracker');
-        // Ici on desactive les cookie
-        __gaTracker('create', gaProperty, {'storage': 'none', 'clientId': '0'});
-        __gaTracker('send', 'event', 'page', 'load', {'nonInteraction': 1});
-    }
-
-
-    // Tag Google Analytics, cette version est avec le tag Universal Analytics
-    function callGoogleAnalytics() {
-        if (firstCall) return;
-        else firstCall = true;
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r;
-            i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date();
-            a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
-            a.async = 1;
-            a.src = g;
-            m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-        ga('create', gaProperty, 'auto');  // Replace with your property ID.
-        ga('send', 'pageview');
-    }
-
     return {
 
         // La fonction d'opt-out
         gaOptout: function () {
-            document.cookie = disableStr + '=true;' + getCookieExpireDate() + ' ; ' + getCookieDomainName() + ' ; path=/';
-            document.cookie = 'hasConsent=false;' + getCookieExpireDate() + ' ; ' + getCookieDomainName() + ' ; path=/';
+            setCookie('hasConsent', false);
+            setCookie('rgpd_cookie_site', true);
+            setCookie('rgpd_cookie_analytic', true);
+            setCookie('rgpd_cookie_tier', false);
+            setCookie('rgpd_cookie_pub', false);
+            this.init();
+
             let div = document.getElementById('cookie-banner');
-            // on considère que le site a été visité
             clickprocessed = true;
-            // Ci dessous le code de la bannière affichée une fois que l'utilisateur s'est opposé au dépot
-            // Vous pouvez modifier le contenu et le style
-            if (div !== null) div.innerHTML = '<div style="background-color:#fff;text-align:center;padding:5px;font-size:12px;border-bottom:1px solid #eeeeee;" id="cookie-message"> Vous vous êtes opposé \
-			au dépôt de cookies de mesures d\'audience dans votre navigateur </div>';
-            window[disableStr] = true;
+            if (div !== null) div.innerHTML = '<div style="background-color:#fff;text-align:center;padding:5px;font-size:12px;border-bottom:1px solid #eeeeee;" id="cookie-message"> ' + localisation.gaOptOut + ' </div>';
             deleteAnalyticsCookies();
         },
 
+        hideBanner: function () {
+            let div = document.getElementById("cookie-banner");
+            div.style.display = "none";
+        },
 
         showInform: function () {
-            let div = document.getElementById("inform-and-ask");
-            div.style.display = "";
+            window.location.href = location.protocol + '//' + location.hostname + localisation.personalizeLink;
         },
 
 
         hideInform: function () {
-            let div = document.getElementById("inform-and-ask");
-            div.style.display = "none";
             let div1 = document.getElementById("cookie-banner");
-            div1.style.display = "none";
+            if (null !== div1)
+                div1.style.display = "none";
+            ferme();
         },
 
+        changeRgpdSettings: function (name, value) {
+            window[name] = value;
+        },
+
+        init: function () {
+
+            let analyticsCookie = getCookieValue('rgpd_cookie_analytic');
+            let pubCookie = getCookieValue('rgpd_cookie_pub');
+            let siteCookie = getCookieValue('rgpd_cookie_site');
+            let tierCookie = getCookieValue('rgpd_cookie_tier');
+
+            let elCookieTier = document.getElementById("rgpd_cookie_tier");
+            let elCookieAnal = document.getElementById("rgpd_cookie_analytics");
+            let elCookiePub = document.getElementById("rgpd_cookie_pub");
+            let elCookieSite = document.getElementById("rgpd_cookie_site");
+
+            if(pubCookie !== '')
+                window.rgpd_cookie_pub = pubCookie;
+            if(siteCookie !== '')
+                window.rgpd_cookie_site = siteCookie;
+            if(tierCookie !== '')
+                window.rgpd_cookie_tier = tierCookie;
+            if(analyticsCookie !== '')
+                window.rgpd_cookie_analytic = analyticsCookie;
+
+            if(null !== elCookieTier && tierCookie === 'false'){
+                elCookieTier.classList.add('off');
+            }
+            if(null !== elCookieAnal && analyticsCookie === 'false'){
+                elCookieAnal.classList.add('off');
+            }
+            if(null !== elCookiePub && pubCookie === 'false'){
+                elCookiePub.classList.add('off');
+            }
+            if(null !== elCookieSite && siteCookie === 'false'){
+                elCookieSite.classList.add('off');
+            }
+        },
+
+        saveConsent: function () {
+            setCookie('hasConsent', true);
+            setCookie('rgpd_cookie_site', window.rgpd_cookie_site);
+            setCookie('rgpd_cookie_analytic', window.rgpd_cookie_analytic);
+            setCookie('rgpd_cookie_tier', window.rgpd_cookie_tier);
+            setCookie('rgpd_cookie_pub', window.rgpd_cookie_pub);
+        },
 
         start: function () {
-            //Ce bout de code vérifie que le consentement n'a pas déjà été obtenu avant d'afficher
-            // la bannière
             let consentCookie = getCookie('hasConsent');
             clickprocessed = false;
-            if (!consentCookie) {//L'utilisateur n'a pas encore de cookie, on affiche la banniére et si il clique sur un autre élément que la banniére, on enregistre le consentement
-                if (notToTrack()) { //L'utilisateur a activé DoNotTrack. Do not ask for consent and just opt him out
-                    tagAnalyticsCNIL.CookieConsent.gaOptout();
-                    alert("You've enabled DNT, we're respecting your choice")
+            if (!consentCookie) {
+                if (notToTrack()) {
+                    tagAnalytics.CookieConsent.gaOptout();
+                    alert(localisation.alertDnd)
                 } else {
-                    if (isToTrack()) { //DNT is set to 0, no need to ask for consent just set cookies
+                    if (isToTrack()) {
                         consent();
                     } else {
-                        if (window.addEventListener) { // See note https://github.com/CNILlab/Cookie-consent_Google-Analytics/commit/e323b3be2c4a4d05300e35cdc11102841abdcbc9
+                        if (window.addEventListener) {
                             // Standard browsers
-                            window.addEventListener("load", showBanner, false);
+                            if (location.pathname !== localisation.personalizeLink) {
+                                window.addEventListener("load", showBanner, false);
+                            }
                             document.addEventListener("click", consent, false);
                         } else {
-                            window.attachEvent("onload", showBanner);
+                            if (location.pathname !== localisation.personalizeLink) {
+                                window.addEventListener("load", showBanner, false);
+                            }
                             document.attachEvent("onclick", consent);
                         }
-                        callGABeforeConsent()
                     }
                 }
-            } else {
-                if (document.cookie.indexOf('hasConsent=false') > -1)
-                    window[disableStr] = true;
-                else
-                    callGoogleAnalytics();
             }
         }
     }
 
 }();
 
-tagAnalyticsCNIL.CookieConsent.start();
+tagAnalytics.CookieConsent.start();
