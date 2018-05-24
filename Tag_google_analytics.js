@@ -250,6 +250,7 @@ tagAnalytics.CookieConsent = function () {
 
         start: function () {
             let consentCookie = getCookie('hasConsent');
+            console.log(consentCookie);
             clickprocessed = false;
             if (!consentCookie) {
                 if (notToTrack()) {
