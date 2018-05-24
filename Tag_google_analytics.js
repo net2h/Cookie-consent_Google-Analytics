@@ -41,7 +41,7 @@ tagAnalytics.CookieConsent = function () {
         let bodytag = document.getElementsByTagName('body')[0];
         let div = document.createElement('div');
         div.setAttribute('id', 'cookie-banner');
-        div.setAttribute('class', 'fixed b0 l0 z999 w100P center line50 h50 fn07 blanc font12 bb ombre animated1 slideInUp');
+        div.setAttribute('class', 'fixed b0 l0 z999 w100P center pad100 fn07 blanc font12 bb ombre animated1 slideInUp');
         div.innerHTML = localisation.bannerContentHTML;
         bodytag.insertBefore(div, bodytag.firstChild);
         document.getElementsByTagName('body')[0].className += ' cookiebanner';
@@ -207,23 +207,36 @@ tagAnalytics.CookieConsent = function () {
             if(pubCookie !== '')
                 window.rgpd_cookie_pub = pubCookie;
             if(siteCookie !== '')
-                window.rgpd_cookie_site = siteCookie;
+               window.rgpd_cookie_site = siteCookie;
             if(tierCookie !== '')
-                window.rgpd_cookie_tier = tierCookie;
+              window.rgpd_cookie_tier = tierCookie;
             if(analyticsCookie !== '')
-                window.rgpd_cookie_analytic = analyticsCookie;
+              window.rgpd_cookie_analytic = analyticsCookie;
 
-            if(null !== elCookieTier && tierCookie === 'false'){
-                elCookieTier.classList.add('off');
+            if(null !== elCookieTier){
+                if(tierCookie === 'false')
+                    elCookieTier.classList.add('off');
+                else
+                    elCookieTier.classList.add('on');
             }
-            if(null !== elCookieAnal && analyticsCookie === 'false'){
-                elCookieAnal.classList.add('off');
+
+            if(null !== elCookieAnal){
+                if(analyticsCookie === 'false')
+                    elCookieAnal.classList.add('off');
+                else
+                    elCookieAnal.classList.add('on');
             }
-            if(null !== elCookiePub && pubCookie === 'false'){
-                elCookiePub.classList.add('off');
+            if(null !== elCookiePub){
+                if(pubCookie === 'false')
+                    elCookiePub.classList.add('off');
+                else
+                    elCookiePub.classList.add('on');
             }
-            if(null !== elCookieSite && siteCookie === 'false'){
-                elCookieSite.classList.add('off');
+            if(null !== elCookieSite){
+                if(siteCookie === 'false')
+                    elCookieSite.classList.add('off');
+                else
+                    elCookieSite.classList.add('on');
             }
         },
 
