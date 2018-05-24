@@ -38,6 +38,7 @@ tagAnalytics.CookieConsent = function () {
     }
 
     function showBanner() {
+        console.log('ok');
         let bodytag = document.getElementsByTagName('body')[0];
         let div = document.createElement('div');
         div.setAttribute('id', 'cookie-banner');
