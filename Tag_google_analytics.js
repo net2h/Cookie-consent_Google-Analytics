@@ -42,7 +42,7 @@ tagAnalytics.CookieConsent = function () {
         let bodytag = document.getElementsByTagName('body')[0];
         let div = document.createElement('div');
         div.setAttribute('id', 'cookie-banner');
-        div.setAttribute('class', 'fixed b0 l0 z999 w100P center pad100 fn07 blanc font12 bb ombre animated1 slideInUp');
+        div.setAttribute('class', 'none fixed b0 l0 z999 w100P center pad100 fn07 blanc font12 bb ombre animated1 slideInUp');
         div.innerHTML = localisation.bannerContentHTML;
         bodytag.insertBefore(div, bodytag.firstChild);
         document.getElementsByTagName('body')[0].className += ' cookiebanner';
