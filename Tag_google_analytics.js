@@ -38,11 +38,10 @@ tagAnalytics.CookieConsent = function () {
     }
 
     function showBanner() {
-        console.log('ok');
         let bodytag = document.getElementsByTagName('body')[0];
         let div = document.createElement('div');
         div.setAttribute('id', 'cookie-banner');
-        div.setAttribute('class', 'none fixed b0 l0 z999 w100P center pad100 fn07 blanc font12 bb ombre animated1 slideInUp');
+        div.setAttribute('class', 'fixed b0 l0 z999 w100P center pad100 fn07 blanc font12 bb ombre animated1 slideInUp');
         div.innerHTML = localisation.bannerContentHTML;
         bodytag.insertBefore(div, bodytag.firstChild);
         document.getElementsByTagName('body')[0].className += ' cookiebanner';
@@ -128,19 +127,34 @@ tagAnalytics.CookieConsent = function () {
             delCookie(cookieNames[i])
     }
 
-    function isClickOnOptOut(evt) {
-        return (evt.target.id === 'gerercookie' || evt.target.parentNode.id === 'popContent' || evt.target.parentNode.id === 'cookie-banner' || evt.target.parentNode.parentNode.id === 'cookie-banner' || evt.target.id === 'optout-button')
+    // function isClickOnOptOut(evt) {
+    //     console.log(evt.target.id);
+    //     console.log(evt.target.parentNode.id);
+    //
+    //
+    //
+    //     return (
+    //         evt.target.id === 'gerercookie' ||
+    //         evt.target.parentNode.id === 'popContent' ||
+    //         evt.target.parentNode.id === 'cookie-banner' ||
+    //         //evt.target.parentNode.parentNode.id === 'cookie-banner' ||
+    //         evt.target.id === 'optout-button'
+    //     )
+    // }
+
+    function isClickOnOptOut( evt) {
+
+        return(evt.target.parentNode.id == 'cookie-banner' || evt.target.id == 'optout-button' || evt.target.parentNode.id === 'popContent')
     }
 
     function setCookie(name, value){
-        console.log('name '+name+' value '+value)
         document.cookie = name+'='+value+';'+ getCookieExpireDate() + ' ; ' + getCookieDomainName() + ' ; path=/';
     }
 
     function consent(evt) {
+        console.log(isClickOnOptOut(evt));
         if (!isClickOnOptOut(evt)) {
             if (!clickprocessed) {
-                console.log(evt);
                 evt.preventDefault();
                 setCookie('hasConsent', true);
                 setCookie('rgpd_cookie_site', window.rgpd_cookie_site);
@@ -148,6 +162,7 @@ tagAnalytics.CookieConsent = function () {
                 setCookie('rgpd_cookie_tier', window.rgpd_cookie_tier);
                 setCookie('rgpd_cookie_pub', window.rgpd_cookie_pub);
                 clickprocessed = true;
+                document.getElementById('cookie-banner').style.display = "none";
                 window.setTimeout(function () {
                     evt.target.click();
                 }, 1000)
@@ -208,11 +223,11 @@ tagAnalytics.CookieConsent = function () {
             if(pubCookie !== '')
                 window.rgpd_cookie_pub = pubCookie;
             if(siteCookie !== '')
-               window.rgpd_cookie_site = siteCookie;
+                window.rgpd_cookie_site = siteCookie;
             if(tierCookie !== '')
-              window.rgpd_cookie_tier = tierCookie;
+                window.rgpd_cookie_tier = tierCookie;
             if(analyticsCookie !== '')
-              window.rgpd_cookie_analytic = analyticsCookie;
+                window.rgpd_cookie_analytic = analyticsCookie;
 
             if(null !== elCookieTier){
                 if(tierCookie === 'false')
@@ -250,8 +265,7 @@ tagAnalytics.CookieConsent = function () {
         },
 
         start: function () {
-            let consentCookie = getCookie('hasConsent');
-            console.log(consentCookie);
+            let consentCookie = getCookieValue('hasConsent');
             clickprocessed = false;
             if (!consentCookie) {
                 if (notToTrack()) {
