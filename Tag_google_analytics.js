@@ -144,7 +144,7 @@ tagAnalytics.CookieConsent = function () {
 
     function isClickOnOptOut( evt) {
 
-        return(evt.target.parentNode.id == 'cookie-banner' || evt.target.id == 'optout-button' || evt.target.parentNode.id === 'popContent')
+        return(evt.target.parentNode.id == 'cookie-banner' || evt.target.id == 'optout-button')
     }
 
     function setCookie(name, value){
@@ -152,7 +152,6 @@ tagAnalytics.CookieConsent = function () {
     }
 
     function consent(evt) {
-        console.log(isClickOnOptOut(evt));
         if (!isClickOnOptOut(evt)) {
             if (!clickprocessed) {
                 evt.preventDefault();
@@ -162,7 +161,6 @@ tagAnalytics.CookieConsent = function () {
                 setCookie('rgpd_cookie_tier', window.rgpd_cookie_tier);
                 setCookie('rgpd_cookie_pub', window.rgpd_cookie_pub);
                 clickprocessed = true;
-                document.getElementById('cookie-banner').style.display = "none";
                 window.setTimeout(function () {
                     evt.target.click();
                 }, 1000)
