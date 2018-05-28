@@ -270,7 +270,6 @@ console.log(rgpd_cookie_pub);
                 else
                     elCookieSite.classList.add('on');
             }
-            this.gaTrigger();
         },
 
         saveConsent: function () {
@@ -307,6 +306,7 @@ console.log(rgpd_cookie_pub);
                     }
                 }
             }
+            this.gaTrigger();
         }
     }
 
