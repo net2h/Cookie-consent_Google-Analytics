@@ -5,6 +5,8 @@ window.rgpd_cookie_site = true;
 window.rgpd_cookie_tier = true;
 window.rgpd_cookie_analytic = true;
 
+const dndActive = false;
+
 tagAnalytics.CookieConsent = function () {
     let firstCall = false;
     let domaineName = '';
@@ -99,18 +101,26 @@ tagAnalytics.CookieConsent = function () {
     }
 
     function notToTrack() {
-        if ((navigator.doNotTrack && (navigator.doNotTrack === 'yes' || navigator.doNotTrack === '1')) || ( navigator.msDoNotTrack && navigator.msDoNotTrack === '1')) {
-            let isIE = (getInternetExplorerVersion() !== -1);
-            if (!isIE) {
-                return true;
-            } else {
-                return askDNTConfirmation();
+        if(dndActive === true){
+            if ((navigator.doNotTrack && (navigator.doNotTrack === 'yes' || navigator.doNotTrack === '1')) || ( navigator.msDoNotTrack && navigator.msDoNotTrack === '1')) {
+                let isIE = (getInternetExplorerVersion() !== -1);
+                if (!isIE) {
+                    return true;
+                } else {
+                    return askDNTConfirmation();
+                }
             }
+        }else{
+            return false;
         }
     }
 
     function isToTrack() {
-        if (navigator.doNotTrack && (navigator.doNotTrack === 'no' || navigator.doNotTrack === 0 )) {
+        if(dndActive === true){
+            if (navigator.doNotTrack && (navigator.doNotTrack === 'no' || navigator.doNotTrack === 0 )) {
+                return true;
+            }
+        }else{
             return true;
         }
     }
