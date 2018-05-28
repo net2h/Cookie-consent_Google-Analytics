@@ -311,6 +311,7 @@ tagAnalytics.CookieConsent = function() {
             setCookie('rgpd_cookie_analytic', window.rgpd_cookie_analytic);
             setCookie('rgpd_cookie_tier', window.rgpd_cookie_tier);
             setCookie('rgpd_cookie_pub', window.rgpd_cookie_pub);
+            this.gaTrigger();
         },
 
         start: function() {
