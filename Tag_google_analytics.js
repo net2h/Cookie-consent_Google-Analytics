@@ -210,7 +210,8 @@ tagAnalytics.CookieConsent = function () {
 
             let rgpd_cookie_analytic = getCookieValue('rgpd_cookie_analytic');
             let rgpd_cookie_pub = getCookieValue('rgpd_cookie_pub');
-
+console.log(rgpd_cookie_analytic);
+console.log(rgpd_cookie_pub);
             if (rgpd_cookie_analytic === 'true'){
                 console.log('ANALYTICS CONSENT');
                 dataLayer.push({'event':'cookieconsent_analytic'});
