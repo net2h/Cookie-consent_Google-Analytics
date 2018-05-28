@@ -206,6 +206,23 @@ tagAnalytics.CookieConsent = function () {
             window[name] = value;
         },
 
+        gaTrigger: function() {
+
+            let rgpd_cookie_analytic = getCookieValue('rgpd_cookie_analytic');
+            let rgpd_cookie_pub = getCookieValue('rgpd_cookie_pub');
+
+            if (rgpd_cookie_analytic === 'true'){
+                console.log('ANALYTICS CONSENT');
+                dataLayer.push({'event':'cookieconsent_analytic'});
+            }
+
+            if (rgpd_cookie_pub === 'true'){
+                console.log('PUB CONSENT');
+                dataLayer.push({'event':'cookieconsent_pub'});
+            }
+
+        },
+
         init: function () {
 
             let analyticsCookie = getCookieValue('rgpd_cookie_analytic');
@@ -252,6 +269,7 @@ tagAnalytics.CookieConsent = function () {
                 else
                     elCookieSite.classList.add('on');
             }
+            this.gaTrigger();
         },
 
         saveConsent: function () {
