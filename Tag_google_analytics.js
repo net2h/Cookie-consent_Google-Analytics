@@ -216,7 +216,14 @@ tagAnalytics.CookieConsent = function() {
         },
 
         showInform: function() {
-            window.location.href = location.protocol + '//' + location.hostname + localisation.personalizeLink;
+            if (location.hostname === 'croisieres.cdiscount.com')
+            {
+                window.open('https://www.cdiscount.com/vie-privee-et-cookies.html', '_blank');
+            }
+            else
+            {
+                window.location.href = location.protocol + '//' + location.hostname + localisation.personalizeLink;
+            }
         },
 
 
